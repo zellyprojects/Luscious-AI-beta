@@ -1,0 +1,917 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="favicon.png">
+<title>Luscious AI Beta</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#0f1117;
+    background:
+linear-gradient(
+135deg,
+#111214,
+#181a20,
+#101114
+);
+     height:100vh;
+
+    overflow:hidden;
+
+    position:relative;
+}
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+
+    height:500px;
+
+    background:#5865f2;
+
+    border-radius:50%;
+
+    filter:blur(140px);
+
+    top:-120px;
+
+    left:-120px;
+
+    opacity:0.35;
+
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:400px;
+
+    height:400px;
+
+    background:#8b5cf6;
+
+    border-radius:50%;
+
+    filter:blur(140px);
+
+    bottom:-100px;
+
+    right:-100px;
+
+    opacity:0.25;
+
+}
+
+.main-container{
+    display:flex;
+    height:100vh;
+    width:100%;
+    position:relative;
+    z-index:1;
+}
+.typing-loader{
+
+    display:flex;
+
+    gap:6px;
+
+    padding:10px 0;
+
+}
+
+.typing-loader span{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:white;
+
+    opacity:0.4;
+
+    animation:blink 1.4s infinite;
+
+}
+
+.typing-loader span:nth-child(2){
+
+    animation-delay:0.2s;
+
+}
+
+.typing-loader span:nth-child(3){
+
+    animation-delay:0.4s;
+
+}
+
+@keyframes blink{
+
+    0%{
+
+        opacity:0.2;
+        transform:translateY(0px);
+
+    }
+
+    50%{
+
+        opacity:1;
+        transform:translateY(-4px);
+
+    }
+
+    100%{
+
+        opacity:0.2;
+        transform:translateY(0px);
+
+    }
+
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:250px;
+    background:rgba(20,20,25,0.55);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    display:flex;
+    flex-direction:column;
+    padding:15px;
+    gap:15px;
+    border-right:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+    padding:15px;
+    background:#5865f2;
+    border-radius:18px;
+    text-align:center;
+}
+
+.sidebar-buttons{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.sidebar button{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(14px);
+    border:none;
+    color:white;
+    padding:14px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:0.2s;
+    font-size:15px;
+}
+
+.sidebar button:hover{
+    background:#5865f2;
+}
+
+.history{
+    flex:1;
+    overflow-y:auto;
+    padding-right:5px;
+}
+
+.history h3{
+    color:#b5bac1;
+    margin-bottom:10px;
+}
+
+.history-item{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(14px);
+    color:#dcddde;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+/* CHAT AREA */
+
+.chat-area{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:#18191c;
+}
+.top-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.menu-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+    transition:0.3s;
+
+    backdrop-filter:blur(10px);
+
+}
+
+.menu-btn:hover{
+
+    transform:scale(1.08);
+
+    background:rgba(255,255,255,0.14);
+
+}
+
+.sidebar{
+
+    transition:0.35s ease;
+
+    overflow:hidden;
+
+}
+
+.sidebar.collapsed{
+    width:85px;
+}
+
+.sidebar.collapsed .logo{
+
+    font-size:0;
+
+}
+
+.sidebar.collapsed .logo::before{
+
+    content:"✨";
+
+    font-size:28px;
+
+}
+
+    
+
+
+.topbar{
+    height:70px;
+    background:rgba(30,30,35,0.45);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    border-bottom:1px solid #1e1f22;
+}
+
+.topbar h1{
+    color:white;
+    font-size:24px;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+}
+
+.top-actions button{
+    background:#404249;
+    border:none;
+    color:white;
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:18px;
+    transition:0.2s;
+}
+
+.top-actions button:hover{
+    background:#5865f2;
+}
+
+.welcome-text{
+    text-align:center;
+    color:white;
+    margin-top:120px;
+}
+
+.welcome-text h2{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.welcome-text p{
+    color:#b5bac1;
+    font-size:18px;
+}
+
+.chat-box{
+    flex:1;
+    overflow-y:auto;
+    padding:25px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.message{
+    max-width:75%;
+    padding:16px;
+    border-radius:18px;
+    line-height:1.5;
+    animation:fadeIn 0.2s ease;
+    word-wrap:break-word;
+}
+
+.user{
+    align-self:flex-end;
+    background:#5865f2;
+    color:white;
+}
+
+.bot{
+    align-self:flex-start;
+    background:#404249;
+    color:#dcddde;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* INPUT AREA INSIDE SIDEBAR */
+
+.input-area{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:20px;
+
+}
+
+.input-area input{
+
+    width:700px;
+
+    padding:18px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:30px;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    box-shadow:0 0 25px rgba(0,0,0,0.2);
+
+    color:white;
+
+    font-size:15px;
+
+}
+
+.input-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.input-buttons button{
+
+    width:52px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#5865f2;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+}
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+    width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#5865f2;
+    border-radius:20px;
+}
+
+
+.light-mode{
+    background:#f2f3f5;
+}
+
+.light-mode .chat-area,
+.light-mode .sidebar{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,0.05);
+}
+
+.light-mode .message.bot{
+    color:black;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main-container">
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+            Luscious AI
+        </div>
+
+        <div class="sidebar-buttons">
+
+            <button onclick="clearChat()">
+                + New Chat
+            </button>
+
+           
+        </div>
+
+        <div class="history">
+
+            <h3>History</h3>
+
+            
+        </div>
+
+        <!-- INPUT AREA -->
+
+        <div class="input-area">
+
+            
+
+            <div class="input-buttons">
+
+                
+               
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- CHAT AREA -->
+
+    <div class="chat-area">
+
+        <div class="topbar">
+
+            <div class="top-left">
+
+    <button class="menu-btn"
+    onclick="toggleSidebar()">
+        ☰
+    </button>
+
+    <h1>Luscious AI Beta</h1>
+
+</div>
+
+            <div class="top-actions">
+
+                <button onclick="toggleTheme()">
+                    🌙
+                </button>
+
+                
+
+            </div>
+
+        </div>
+
+        <div class="welcome-text" id="welcomeText">
+            <h2>How's Your Day Going?</h2>
+            <p>Ready when you are.</p>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+
+        </div>
+<div class="input-area">
+
+            <input
+            type="text"
+            id="userInput"
+            placeholder="Message Luscious AI...">
+
+            <div class="input-buttons">
+
+                <button onclick="startListening()">
+                    🎤
+                </button>
+
+                <button onclick="sendMessage()">
+                    Send
+                </button>
+
+            </div>
+
+
+    </div>
+
+</div>
+
+<script>
+
+let voiceMode = false;
+
+function saveChats(){
+
+    localStorage.setItem(
+        "chatData",
+        document.getElementById("chatBox").innerHTML
+    );
+
+}
+
+function loadChats(){
+
+    let savedChats = localStorage.getItem("chatData");
+
+    if(savedChats){
+
+        document.getElementById("chatBox").innerHTML = savedChats;
+
+    }
+
+}
+
+function clearChat(){
+
+    localStorage.removeItem("chatData");
+
+    document.getElementById("chatBox").innerHTML = "";
+
+    document.getElementById("welcomeText").style.display = "block";
+
+}
+
+function stopVoice(){
+
+    speechSynthesis.cancel();
+
+}
+
+function startListening(){
+
+    voiceMode = true;
+
+    let recognition = new webkitSpeechRecognition();
+
+    recognition.lang = "en-US";
+
+    recognition.onresult = function(event){
+
+        document.getElementById("userInput").value =
+        event.results[0][0].transcript;
+
+        sendMessage();
+
+    };
+
+    recognition.start();
+
+}
+
+function switchChat(number){
+
+    alert("Opened Chat " + number);
+
+}
+
+function toggleTheme(){
+
+    document.body.classList.toggle("light-mode");
+
+}
+function toggleSidebar(){
+
+    document.querySelector(".sidebar")
+    .classList.toggle("collapsed");
+
+}
+function readAloud(button){
+
+let message =
+button.parentElement.previousElementSibling
+.innerText;
+
+message = message.replace(
+/[\u{1F300}-\u{1FAFF}]/gu,
+""
+);
+    speechSynthesis.cancel();
+
+    const speech =
+    new SpeechSynthesisUtterance(message);
+
+    speech.lang = "en-US";
+
+    speech.rate = 1;
+
+    speech.pitch = 1;
+
+    speech.volume = 1;
+
+    speech.onstart = () => {
+
+        button.innerHTML = "⏹";
+
+    };
+
+    speech.onend = () => {
+
+        button.innerHTML = "🔈";
+
+    };
+
+    speechSynthesis.speak(speech);
+
+    button.onclick = () => {
+
+        speechSynthesis.cancel();
+
+        button.innerHTML = "🔈";
+
+        button.onclick = () =>
+        readAloud(button);
+
+    };
+
+}
+async function sendMessage(){
+
+    let input = document.getElementById("userInput");
+
+    let message = input.value;
+
+    if(message.trim() === "") return;
+
+    document.getElementById("welcomeText").style.display = "none";
+
+    let chatBox = document.getElementById("chatBox");
+    let chats = [];
+
+let currentChat = 0;
+chats.push([]);
+
+    let userMessage = document.createElement("div");
+
+    userMessage.classList.add("message", "user");
+
+    userMessage.innerText = message;
+
+    chatBox.appendChild(userMessage);
+
+    saveChats();
+
+    input.value = "";
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    let response = await fetch("http://localhost:3000/chat", {
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            message:message
+        })
+
+    });
+
+    let data = await response.json();
+
+    let botMessage = document.createElement("div");
+
+    botMessage.classList.add("message", "bot");
+
+    chatBox.appendChild(botMessage);
+    botMessage.innerHTML = `
+
+<div class="typing-loader">
+
+    <span></span>
+    <span></span>
+    <span></span>
+
+</div>
+
+`;
+
+    let text = data.reply;
+
+    let cleanText = text.replace(
+    /[^\p{L}\p{N}\p{P}\p{Z}]/gu,
+    ''
+    );
+
+    botMessage.innerHTML = "";
+    chats[currentChat].push({
+
+    role:"bot",
+
+    text:text
+
+});
+
+    let i = 0;
+
+    let typing = setInterval(() => {
+
+        botMessage.innerHTML = text.substring(0, i);
+
+        i++;
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        if(i > text.length){
+
+            clearInterval(typing);
+
+           const actions = document.createElement("div");
+
+actions.classList.add("message-actions");
+
+actions.innerHTML = `
+
+<button onclick="readAloud(this)"
+.speak-btn{
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+    padding:6px;
+
+}
+
+.speak-btn:hover{
+
+    transform:scale(1.1);
+
+    opacity:0.8;
+
+}
+class="speak-btn"
+class="speak-btn">
+    ♫
+
+</button>
+
+`;
+
+chatBox.appendChild(actions);
+
+            if(voiceMode){
+
+                speechSynthesis.cancel();
+
+                let speech = new SpeechSynthesisUtterance(cleanText);
+
+                speech.lang = "en-US";
+
+                speech.rate = 1;
+
+                speech.pitch = 1;
+
+                speech.volume = 1;
+
+                speechSynthesis.speak(speech);
+
+                voiceMode = false;
+
+            }
+
+            saveChats();
+
+        }
+
+    }, 20);
+
+}
+
+loadChats();
+
+document.getElementById("userInput")
+.addEventListener("keypress", function(event){
+
+    if(event.key === "Enter"){
+        sendMessage();
+    chats[currentChat].push({
+
+    role:"user",
+
+    text:userInput.value
+
+});
+    }
+
+});
+
+</script>
+
+</body>
+</html>
